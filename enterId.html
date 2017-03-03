@@ -1,0 +1,267 @@
+<html lang="en">
+  <script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script scr="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+  <div class="all">
+    <idInput >
+      <base target="_top">
+      <div class="container">
+        <div class="form-group row">
+          <h1>IBESS Group Quiz Recording System</h1>
+          <br>
+          <label for="input">Student ID Number</label>
+          <div class="width">
+            <input   type="text" pattern="[0-9]*" maxlength="7" class="form-control" style="width: 300px" style="height: 300px" id="input" placeholder="0000000..."> </div>
+          <div class="form-group row">
+          <br>
+            <div class="offset-sm-2 col-sm-10">
+              <button id="idSub" class="btn btn-primary" onclick="runid()">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+    </idInput>
+
+  <nameInput>
+      <div class="container">
+        <h1>IBESS Group Quiz Recording System</h1>
+        
+          <div class="form-group row">
+            <label for="nameInput" class="col-sm-2 col-form-label">First and Last Name</label>
+            <div class="col-sm-10">
+              <div class="width">
+                <input type="text" class="form-control" id="name" placeholder="Firstname Lastname"> </div>
+                <small id="emailHelp" class="form-text text-muted">Enter your name as it appears on powerschool.</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="studentIdInput" class="col-sm-2 col-form-label">Student ID Number</label>
+            <div class="col-sm-10">
+              <div class="width">
+                <input type="number" class="form-control" id="input" pattern="[0-9]*" placeholder="0000000..."> </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+              <button id="studSub" class="btn btn-primary" onclick="addStudent()">Submit</button>
+            </div>
+          </div>
+      </div>
+    </nameInput>
+
+    <gqInput>
+      <div class="container">
+        <h1>IBESS Group Quiz Recording System</h1>
+        <h3></h3>
+          <div id='1' class="form-group row">
+            <label for="QuizNoinput" class="col-sm-2 col-form-label">Group Quiz Number</label>
+            <div class="col-sm-10">
+              <div class="width">
+                <input type="text" class="form-control" id="gqNumber" placeholder="5" maxlength="2"pattern="[0-9]*"> </div>
+                <small id="emailHelp" class="form-text text-muted">Enter Only Numbers</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="gradeInput" class="col-sm-2 col-form-label">Group Quiz Grade</label>
+            <div class="col-sm-10">
+              <div class="width">
+                <input type="text" maxlength="3" class="form-control" id="gqGrade" value='' pattern="[0-9]*" max="101"placeholder="100"aria-describedby="helpBlock"> </div>
+                <small id="emailHelp" class="form-text text-muted">No Percentages, enter only numbers.</small>
+                <span id="helpBlock" class="help-block"></span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+              <button id="gqSub" class="btn btn-primary" onclick="addGQ()">Submit</button>
+            </div>
+          </div>
+      </div>
+      <?<table  id='gqTable' class="container" >
+      <div> 
+      <div>
+      <tr>
+      <td class="row" >Quiz Number</td>
+      <td class="row">Score</td>
+      </tr>
+      </div>
+      </div>
+    
+      </table>?>
+      
+    <div class="container">
+    <h4>Veiw previous quizzes:</h4>
+      <table class="table table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th>Quiz</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody id="gqRows">
+      
+    </tbody>
+  </table>
+      </div>
+    </gqInput>
+
+  </div>
+</html>
+
+<style>
+.width{
+width:100%
+}
+
+div.all {
+margin: 0px;
+height: 100%;
+width: 100%;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+  $('idInput').keypress(function(e) {
+    if (e.keyCode == 13)
+      $('#idSub').click();
+  });
+  $('nameInput').keypress(function(e) {
+    if (e.keyCode == 13)
+      $('#studSub').click();
+  });
+   $('gqInput').keypress(function(e) {
+    if (e.keyCode == 13)
+      $('#gqSub').click();
+  });
+});
+
+//so that when a button is clicked it displays loading
+$(document).ready(function() {
+  $('button').click(function() {
+    $(this).empty().append('Loading...');
+  });
+});
+
+
+$('#gqNumber').addClass('has-success');
+$('gqInput').hide();
+$('nameInput').hide();
+userinfo = [];
+var col = 0
+var row = 0
+var list = []
+console.log("JS Runs");
+var newi = ''
+
+
+//gets the return value (a list of ID numbers) and then runs function id, passing it the return variable
+function runid() {
+  google.script.run.withSuccessHandler(id).getIdArray()
+}
+
+function id(studId) {
+  var id = document.getElementById('input').value
+  $('nameInput').hide()
+  var c = 0
+  list = studId
+  for (var i = 0; i < studId.length; i++) {
+    if (id == parseInt(studId[i])) {
+      c = 1;
+      col = i + 2;
+      runReturnUser(i + 2);
+    };
+  };
+  if (c == 0) {
+    $('idInput').empty();
+    $('h1').empty().append("Welcome New Student with ID number '" + id + "'. Fill out the form below to register.");
+    $('nameInput').show();
+    document.getElementById("input").value = id;
+  }
+}
+
+
+function runReturnUser(x) {
+  google.script.run.withSuccessHandler(userfo).getUserInfoInArray(x);
+}
+
+function userfo(newinfo) {
+  userinfo = newinfo[0].split(',');
+  var userIdArr = userinfo;
+  console.log(userinfo);
+  var gqs = [];
+  var ave = 0;
+  for (var i = 2; i < userIdArr.length; i++) {
+    if ((userIdArr[i]) !== '') {
+      ave = ave + parseInt(userIdArr[i]);
+      gqs.push(i);
+    }
+  }
+  if (ave == 0) {
+    ave = "none";
+  } else {
+    ave = Math.round(ave / (gqs.length)) + " percent"
+  }
+  $('gqRows').empty()
+  $('idInput').hide()
+  $('h1').empty().append("Hello, " + userIdArr[1] + ". ")
+  $('h3').empty().append("Your average is " + ave + " over " + (gqs.length) + " quizzes. Enter in a new Group Quiz Score Below")
+  $('gqInput').show();
+
+  for (var i = 2; i < userIdArr.length; i++) {
+    if (userIdArr[i] !== '') {
+      $('#gqRows').append('<tr><td>' + (i - 1) + '</td><td>' + userIdArr[i] + '%' + '</td></tr>')
+    };
+  };
+};
+
+function addGQ() {
+  var gqNumber = parseInt(document.getElementById('gqNumber').value) + 1;
+  var gqGrade = parseInt(document.getElementById('gqGrade').value);
+  console.log(userinfo[gqNumber])
+
+  if (userinfo[gqNumber] == null || "") {
+    console.log(userinfo[gqNumber])
+    row = gqNumber - 1
+    google.script.run.withSuccessHandler(returnScreen).addGQ(col, gqNumber + 1, gqGrade);
+  } else {
+    console.log(typeof userinfo[gqNumber])
+
+    $('h1').empty().append("Retake Grades aren't submittable here yet, unfortunetly.")
+    $('gqInput').addClass('has-error');
+    setTimeout(function() {
+      $('#gqSub').empty().append('Submit');
+    }, 1000)
+  }
+}
+
+function returnScreen(grade) {
+  $('#gqRows').append('<tr><td>' + (row) + '</td><td>' + grade + '%' + '</td></tr>')
+  $('gqInput').show();
+  $('h1').empty().append("Quiz recorded with grade '" + grade + "' percent. Submit another quiz below:");
+  $('button').empty().append('Submit');
+  $('gqInput').addClass('has-success');
+  document.getElementById('gqGrade').value = '';
+  document.getElementById('gqNumber').value = '';
+}
+
+function addStudent() {
+  var id = document.getElementById('input').value;
+  var name = document.getElementById('name').value;
+  var col = list.length + 2;
+  google.script.run.addStudent(id, name, col);
+  runid();
+
+}
+</script>
+
+
